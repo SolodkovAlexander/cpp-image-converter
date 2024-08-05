@@ -40,6 +40,8 @@ PACKED_STRUCT_BEGIN BitmapInfoHeader {
 
     bool IsValid() const {
         return (header_size == 40
+                && image_width > 0
+                && image_height > 0
                 && sheet_count == 1
                 && bit_per_pixel == 24
                 && compress_type == 0
@@ -101,6 +103,9 @@ Image LoadBMP(const Path& file) {
     // открываем поток с флагом ios::binary
     // поскольку будем читать данные в двоичном формате
     ifstream ifs(file, ios::binary);
+    if (!ifs.is_open()) {
+        return Image();
+    }
     
     // считываем заголовки файла
     BitmapFileHeader file_header;
